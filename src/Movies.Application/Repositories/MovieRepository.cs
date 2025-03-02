@@ -19,6 +19,13 @@ public class MovieRepository : IMovieRepository
         return Task.FromResult(movieRemoved);
     }
 
+    public Task<bool> DeleteBySlugAsync(string slug)
+    {
+        var removedCount = _movies.RemoveAll(x => x.Slug == slug);
+        var movieRemoved = removedCount > 0;
+        return Task.FromResult(movieRemoved);
+    }
+
     public Task<IEnumerable<Movie>> GetAllAsync()
     {
         return Task.FromResult(_movies.AsEnumerable());
@@ -27,6 +34,12 @@ public class MovieRepository : IMovieRepository
     public Task<Movie?> GetByIdAsync(Guid id)
     {
         var movie = _movies.SingleOrDefault(x => x.Id == id);
+        return Task.FromResult(movie);
+    }
+
+    public Task<Movie?> GetBySlugAsync(string slug)
+    {
+        var movie = _movies.SingleOrDefault(x => x.Slug == slug);
         return Task.FromResult(movie);
     }
 
