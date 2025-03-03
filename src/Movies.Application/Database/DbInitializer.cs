@@ -57,6 +57,13 @@ public class DbInitializer
             USING BTREE(Slug);
             """);
 
+            await databaseConnection.ExecuteAsync("""
+            CREATE TABLE IF NOT EXISTS Genres
+            (
+                MovieId UUID REFERENCES Movies (Id),
+                Name TEXT NOT NULL
+            );
+            """);
         }
         catch (Exception exception)
         {

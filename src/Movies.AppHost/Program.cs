@@ -7,7 +7,7 @@ internal static class Program
         var builder = DistributedApplication.CreateBuilder(args);
 
         var postgres = builder.AddPostgres("postgres")
-                              .WithPgAdmin()
+                              //.WithPgAdmin()
                               .WithImage("postgres", "latest")
                               .WithLifetime(ContainerLifetime.Persistent);
 

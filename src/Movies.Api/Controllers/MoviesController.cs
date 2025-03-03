@@ -27,11 +27,9 @@ public class MoviesController : ControllerBase
     }
 
     [HttpDelete(ApiEndpoints.Movies.Delete)]
-    public async Task<IActionResult> Delete([FromRoute] string idOrSlug)
+    public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
-        var deleted = Guid.TryParse(idOrSlug, out var id)
-            ? await _movieRepository.DeleteByIdAsync(id)
-            : await _movieRepository.DeleteBySlugAsync(idOrSlug);
+        var deleted = await _movieRepository.DeleteByIdAsync(id);
 
         return deleted
             ? NoContent()
