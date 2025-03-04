@@ -1,3 +1,4 @@
+using Movies.Api.Middlewares;
 using Movies.Application;
 using Movies.Application.Database;
 using Movies.ServiceDefaults;
@@ -9,11 +10,11 @@ internal static class Program
     public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-        
+
         builder.AddServiceDefaults();
 
         builder.Services.AddControllers();
-        
+
         builder.Services.AddOpenApi();
 
         builder.AddApplication();
@@ -30,6 +31,8 @@ internal static class Program
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
+
+        app.UseMiddleware<ValidationMappingMiddleware>();
 
         app.MapControllers();
 

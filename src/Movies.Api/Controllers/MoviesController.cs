@@ -22,7 +22,7 @@ public class MoviesController : ControllerBase
 
         await _movieService.CreateAsync(movie);
         
-        var response = movie.ToReponse();
+        var response = movie.ToResponse();
         return CreatedAtAction(nameof(Get), new { idOrSlug = movie.Id }, response);
     }
 
@@ -44,7 +44,7 @@ public class MoviesController : ControllerBase
             : await _movieService.GetBySlugAsync(idOrSlug);
 
         return movie is not null
-            ? Ok(movie.ToReponse())
+            ? Ok(movie.ToResponse())
             : NotFound();
     }
 
@@ -53,7 +53,7 @@ public class MoviesController : ControllerBase
     {
         var movies = await _movieService.GetAllAsync();
 
-        return Ok(movies.ToReponse());
+        return Ok(movies.ToResponse());
     }
 
     [HttpPut(ApiEndpoints.Movies.Update)]
@@ -64,7 +64,7 @@ public class MoviesController : ControllerBase
         var updatedMovie = await _movieService.UpdateAsync(movie);
 
         return updatedMovie != null
-            ? Ok(movie.ToReponse())
+            ? Ok(movie.ToResponse())
             : NotFound();
     }
 }

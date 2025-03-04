@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Movies.Application.Database;
 using Movies.Application.Repositories;
@@ -17,6 +18,8 @@ public static class ApplicationInstaller
 
         builder.Services.AddSingleton<IMovieRepository, MovieRepository>();
         builder.Services.AddSingleton<IMovieService, MovieService>();
+
+        builder.Services.AddValidatorsFromAssembly(AssemblyReference.Assembly, ServiceLifetime.Singleton);
 
         return builder;
     }
