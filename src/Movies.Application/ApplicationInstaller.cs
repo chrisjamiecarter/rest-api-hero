@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using Movies.Application.Database;
 using Movies.Application.Repositories;
+using Movies.Application.Services;
 
 namespace Movies.Application;
 
@@ -15,6 +16,7 @@ public static class ApplicationInstaller
         builder.Services.AddSingleton<DbInitializer>();
 
         builder.Services.AddSingleton<IMovieRepository, MovieRepository>();
+        builder.Services.AddSingleton<IMovieService, MovieService>();
 
         return builder;
     }
