@@ -12,8 +12,8 @@ public class NpgsqlConnectionFactory : IDbConnectionFactory
         _dataSource = dataSource;
     }
 
-    public async Task<IDbConnection> CreateConnectionAsync()
+    public async Task<IDbConnection> CreateConnectionAsync(CancellationToken cancellationToken = default)
     {
-        return await _dataSource.OpenConnectionAsync();
+        return await _dataSource.OpenConnectionAsync(cancellationToken);
     }
 }
