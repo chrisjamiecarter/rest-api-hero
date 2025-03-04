@@ -23,6 +23,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movies.AppHost", "src\Movie
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movies.ServiceDefaults", "src\Movies.ServiceDefaults\Movies.ServiceDefaults.csproj", "{117666E6-6F05-82F2-9621-F2B1E8AF57E6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity.Api", "src\Identity.Api\Identity.Api.csproj", "{69903447-5DF6-22E7-90A7-81BEAEF72338}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity.Contracts", "src\Identity.Contracts\Identity.Contracts.csproj", "{E5C8FA31-FEB4-4A5A-8133-3AEAE8E1415C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +53,14 @@ Global
 		{117666E6-6F05-82F2-9621-F2B1E8AF57E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{117666E6-6F05-82F2-9621-F2B1E8AF57E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{117666E6-6F05-82F2-9621-F2B1E8AF57E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69903447-5DF6-22E7-90A7-81BEAEF72338}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69903447-5DF6-22E7-90A7-81BEAEF72338}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69903447-5DF6-22E7-90A7-81BEAEF72338}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69903447-5DF6-22E7-90A7-81BEAEF72338}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5C8FA31-FEB4-4A5A-8133-3AEAE8E1415C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5C8FA31-FEB4-4A5A-8133-3AEAE8E1415C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5C8FA31-FEB4-4A5A-8133-3AEAE8E1415C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5C8FA31-FEB4-4A5A-8133-3AEAE8E1415C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -59,6 +71,8 @@ Global
 		{B6878528-AE29-4E98-9352-47DDF11B0420} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{6F648CD5-3BDB-4BE6-8FE4-367B945EC488} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{117666E6-6F05-82F2-9621-F2B1E8AF57E6} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{69903447-5DF6-22E7-90A7-81BEAEF72338} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{E5C8FA31-FEB4-4A5A-8133-3AEAE8E1415C} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {85C0EF99-4A42-4E37-9382-8FC258E9155C}

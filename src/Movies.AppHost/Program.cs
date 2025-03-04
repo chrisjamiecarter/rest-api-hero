@@ -18,6 +18,9 @@ internal static class Program
                                .WithReference(moviesDatabase)
                                .WaitFor(moviesDatabase);
 
+        var identityApi = builder.AddProject<Projects.Identity_Api>("identity-api", "https")
+                                 .WithExternalHttpEndpoints();
+
         await builder.Build()
                      .RunAsync();
     }
