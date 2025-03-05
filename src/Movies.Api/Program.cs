@@ -22,26 +22,38 @@ internal static class Program
 
         var jwtOptions = builder.Configuration.GetSection(nameof(JwtOptions)).Get<JwtOptions>() ?? throw new InvalidOperationException("Unable to bind JwtOptions.");
 
-        builder.Services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(options =>
-        {
-            options.TokenValidationParameters = new TokenValidationParameters
+        builder.Services
+            .AddAuthentication(options =>
             {
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key)),
-                ValidAudience = jwtOptions.Audience,
-                ValidateAudience = true,
-                ValidIssuer = jwtOptions.Issuer,
-                ValidateIssuer = true,
-                ValidateLifetime = true,
-            };
-        });
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key)),
+                    ValidAudience = jwtOptions.Audience,
+                    ValidateAudience = true,
+                    ValidIssuer = jwtOptions.Issuer,
+                    ValidateIssuer = true,
+                    ValidateLifetime = true,
+                };
+            });
 
-        builder.Services.AddAuthorizationBuilder()
-            .AddPolicy(Auth.AdminUserPolicyName, policy => policy.RequireClaim(Auth.AdminUserClaimName, "true"));
+        builder.Services
+            .AddAuthorizationBuilder()
+            .AddPolicy(Auth.AdminUserPolicyName, policy =>
+            {
+                policy.RequireClaim(Auth.AdminUserClaimName, "true");
+            })
+            .AddPolicy(Auth.TrustedMemberPolicyName, policy =>
+            {
+                policy.RequireAssertion(auth => 
+                    auth.User.HasClaim(claim => claim is { Type: Auth.AdminUserClaimName, Value: "true" }) || 
+                    auth.User.HasClaim(claim => claim is { Type: Auth.TrustedMemberClaimName, Value: "true" }));
+            });
 
         builder.Services.AddControllers();
 
