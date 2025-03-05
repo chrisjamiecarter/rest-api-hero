@@ -30,7 +30,7 @@ public static class MovieMapping
 
     public static MovieResponse ToResponse(this Movie entity)
     {
-        return new MovieResponse(entity.Id, entity.Title, entity.Slug, entity.ReleaseYear, entity.Genres);
+        return new MovieResponse(entity.Id, entity.Title, entity.Slug, entity.ReleaseYear, entity.Rating, entity.UserRating, entity.Genres);
     }
 
     public static MoviesResponse ToResponse(this IEnumerable<Movie> entities)

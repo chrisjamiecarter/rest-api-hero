@@ -12,6 +12,10 @@ public sealed partial class Movie
 
     public required int ReleaseYear { get; set; }
 
+    public float? Rating { get; set; }
+
+    public int? UserRating { get; set; }
+
     public required List<string> Genres { get; init; } = [];
 
     private string GenerateSlug()

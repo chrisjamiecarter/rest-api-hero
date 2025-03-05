@@ -19,6 +19,9 @@ public static class ApplicationInstaller
         builder.Services.AddSingleton<IMovieRepository, MovieRepository>();
         builder.Services.AddSingleton<IMovieService, MovieService>();
 
+        builder.Services.AddSingleton<IRatingRepository, RatingRepository>();
+        builder.Services.AddSingleton<IRatingService, RatingService>();
+
         builder.Services.AddValidatorsFromAssembly(AssemblyReference.Assembly, ServiceLifetime.Singleton);
 
         return builder;
