@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Movies.Api.Constants;
 using Movies.Api.Middlewares;
 using Movies.Api.Options;
 using Movies.Application;
@@ -39,7 +40,8 @@ internal static class Program
             };
         });
 
-        builder.Services.AddAuthorization();
+        builder.Services.AddAuthorizationBuilder()
+            .AddPolicy(Auth.AdminUserPolicyName, policy => policy.RequireClaim(Auth.AdminUserClaimName, "true"));
 
         builder.Services.AddControllers();
 
