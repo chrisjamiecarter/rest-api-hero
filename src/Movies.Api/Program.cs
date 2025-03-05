@@ -1,4 +1,8 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Movies.Api.Middlewares;
+using Movies.Api.Options;
 using Movies.Application;
 using Movies.Application.Database;
 using Movies.ServiceDefaults;
@@ -12,6 +16,30 @@ internal static class Program
         var builder = WebApplication.CreateBuilder(args);
 
         builder.AddServiceDefaults();
+
+        builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
+
+        var jwtOptions = builder.Configuration.GetSection(nameof(JwtOptions)).Get<JwtOptions>() ?? throw new InvalidOperationException("Unable to bind JwtOptions.");
+
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key)),
+                ValidAudience = jwtOptions.Audience,
+                ValidateAudience = true,
+                ValidIssuer = jwtOptions.Issuer,
+                ValidateIssuer = true,
+                ValidateLifetime = true,
+            };
+        });
+
+        builder.Services.AddAuthorization();
 
         builder.Services.AddControllers();
 
@@ -30,6 +58,7 @@ internal static class Program
 
         app.UseHttpsRedirection();
 
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.UseMiddleware<ValidationMappingMiddleware>();
