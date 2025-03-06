@@ -1,4 +1,5 @@
 using System.Text;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Movies.Api.Constants;
@@ -54,6 +55,16 @@ internal static class Program
                     auth.User.HasClaim(claim => claim is { Type: Auth.AdminUserClaimName, Value: "true" }) || 
                     auth.User.HasClaim(claim => claim is { Type: Auth.TrustedMemberClaimName, Value: "true" }));
             });
+
+        builder.Services
+            .AddApiVersioning(options =>
+            {
+                options.DefaultApiVersion= new ApiVersion(1.0);
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.ReportApiVersions = true;
+                options.ApiVersionReader = new MediaTypeApiVersionReader("api-version");
+            })
+            .AddMvc();
 
         builder.Services.AddControllers();
 

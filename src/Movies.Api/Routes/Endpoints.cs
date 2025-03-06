@@ -2,11 +2,11 @@
 
 public static class Endpoints
 {
-    private const string Root = "api";
+    private const string ApiBase = "api";
 
     public static class Movies
     {
-        private const string Base = $"{Root}/movies";
+        private const string Base = $"{ApiBase}/movies";
 
         public const string Create = Base;
         public const string Delete = $"{Base}/{{id:guid}}";
@@ -20,7 +20,7 @@ public static class Endpoints
 
     public static class Ratings
     {
-        private const string Base = $"{Root}/ratings";
+        private const string Base = $"{ApiBase}/ratings";
 
         public const string GetUserRatings = $"{Base}/me";
     }

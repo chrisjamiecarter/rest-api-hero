@@ -1,6 +1,6 @@
 ﻿using Movies.Application.Enums;
 using Movies.Application.Models;
-using Movies.Contracts.Requests;
+using Movies.Contracts.Requests.V1;
 
 namespace Movies.Api.Mappings;
 

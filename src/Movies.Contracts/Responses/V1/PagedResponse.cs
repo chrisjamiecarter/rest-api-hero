@@ -1,4 +1,4 @@
-﻿namespace Movies.Contracts.Responses;
+﻿namespace Movies.Contracts.Responses.V1;
 
 public record PagedResponse<TResponse>
 {
@@ -10,5 +10,5 @@ public record PagedResponse<TResponse>
 
     public required int Total { get; init; }
 
-    public bool HasNextPage => Total > (PageNumber * PageSize);
+    public bool HasNextPage => Total > PageNumber * PageSize;
 }

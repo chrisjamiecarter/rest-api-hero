@@ -1,5 +1,5 @@
 ﻿using Movies.Application.Models;
-using Movies.Contracts.Responses;
+using Movies.Contracts.Responses.V1;
 
 namespace Movies.Api.Mappings;
 
