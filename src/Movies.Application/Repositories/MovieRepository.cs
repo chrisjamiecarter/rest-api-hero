@@ -113,7 +113,17 @@ public class MovieRepository : IMovieRepository
     {
         using var connection = await _dbConnectionFactory.CreateConnectionAsync(cancellationToken);
 
-        var result = await connection.QueryAsync(new CommandDefinition("""
+        var orderClause = string.Empty;
+        if (options.SortField != null)
+        {
+            orderClause = $"""
+                ,m.{options.SortField}
+                ORDER BY
+                    m.{options.SortField} {(options.SortOrder == Enums.SortOrder.Ascending ? "ASC" : "DESC" )}
+                """;
+        }
+
+        var result = await connection.QueryAsync(new CommandDefinition($"""
             SELECT 
                  m.Id
                 ,m.Slug
@@ -132,7 +142,8 @@ public class MovieRepository : IMovieRepository
                 AND (@ReleaseYear is null OR m.ReleaseYear = @ReleaseYear)
             Group BY
                  m.Id
-                ,UserRating;
+                ,UserRating
+            {orderClause};
             """, 
             options, 
             cancellationToken: cancellationToken));

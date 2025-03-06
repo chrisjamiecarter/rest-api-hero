@@ -1,4 +1,5 @@
-﻿using Movies.Application.Models;
+﻿using Movies.Application.Enums;
+using Movies.Application.Models;
 using Movies.Contracts.Requests;
 
 namespace Movies.Api.Mappings;
@@ -10,7 +11,13 @@ public static class GetAllMoviesMapping
         return new GetAllMoviesOptions
         {
             Title = request.Title,
-            ReleaseYear = request.Year,
+            ReleaseYear = request.ReleaseYear,
+            SortField = request.SortBy?.TrimStart('-'),
+            SortOrder = request.SortBy is null
+                ? SortOrder.Unsorted
+                : request.SortBy.StartsWith('-')
+                    ? SortOrder.Descending
+                    : SortOrder.Ascending
         };
     }
 
