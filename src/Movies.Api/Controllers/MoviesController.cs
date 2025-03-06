@@ -64,8 +64,9 @@ public class MoviesController : ControllerBase
         var options = request.ToOptions().WithUserId(userId);
 
         var movies = await _movieService.GetAllAsync(options, cancellationToken);
+        var moviesCount = await _movieService.GetCountAsync(options.Title, options.ReleaseYear, cancellationToken);
 
-        return Ok(movies.ToResponse());
+        return Ok(movies.ToResponse(request.PageNumber, request.PageSize, moviesCount));
     }
 
     [Authorize(Auth.TrustedMemberPolicyName)]

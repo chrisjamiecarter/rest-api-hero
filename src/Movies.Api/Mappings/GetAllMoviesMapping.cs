@@ -17,7 +17,9 @@ public static class GetAllMoviesMapping
                 ? SortOrder.Unsorted
                 : request.SortBy.StartsWith('-')
                     ? SortOrder.Descending
-                    : SortOrder.Ascending
+                    : SortOrder.Ascending,
+            PageNumber = request.PageNumber,
+            PageSize = request.PageSize,
         };
     }
 

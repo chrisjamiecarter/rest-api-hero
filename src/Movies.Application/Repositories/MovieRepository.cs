@@ -138,14 +138,25 @@ public class MovieRepository : IMovieRepository
                 LEFT JOIN Ratings AS r On m.Id = r.MovieId
                 LEFT JOIN Ratings AS ur ON m.Id = ur.MovieId AND ur.UserId = @UserId
             WHERE
-                (@Title is null OR m.Title LIKE ('%' || @Title || '%'))
-                AND (@ReleaseYear is null OR m.ReleaseYear = @ReleaseYear)
-            Group BY
+                (@Title IS NULL OR m.Title ILIKE ('%' || @Title || '%'))
+                AND (@ReleaseYear IS NULL OR m.ReleaseYear = @ReleaseYear)
+            GROUP BY
                  m.Id
                 ,UserRating
-            {orderClause};
+            {orderClause}
+            LIMIT
+                @PageSize
+            OFFSET
+                @PageOffset;
             """, 
-            options, 
+            new
+            {
+                options.UserId,
+                options.Title,
+                options.ReleaseYear,
+                options.PageSize,
+                PageOffset = (options.PageNumber - 1) * options.PageSize
+            }, 
             cancellationToken: cancellationToken));
 
         return result.Select(x => new Movie
@@ -247,6 +258,26 @@ public class MovieRepository : IMovieRepository
 
         movie.Genres.AddRange(genres);
         return movie;
+    }
+
+    public async Task<int> GetCountAsync(string? title, int? releaseYear, CancellationToken cancellationToken = default)
+    {
+        using var connection = await _dbConnectionFactory.CreateConnectionAsync(cancellationToken);
+        return await connection.QuerySingleAsync<int>(new CommandDefinition("""
+            SELECT
+                COUNT(Id)
+            FROM
+                Movies
+            WHERE
+                (@Title IS NULL OR Title LIKE ('%' || @Title || '%'))
+                AND (@ReleaseYear IS NULL OR ReleaseYear = @ReleaseYear);
+            """,
+            new 
+            { 
+                Title = title, 
+                ReleaseYear = releaseYear 
+            },
+            cancellationToken: cancellationToken));
     }
 
     public async Task<bool> UpdateAsync(Movie movie, CancellationToken cancellationToken = default)

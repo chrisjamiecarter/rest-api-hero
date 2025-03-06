@@ -33,8 +33,14 @@ public static class MovieMapping
         return new MovieResponse(entity.Id, entity.Title, entity.Slug, entity.ReleaseYear, entity.Rating, entity.UserRating, entity.Genres);
     }
 
-    public static MoviesResponse ToResponse(this IEnumerable<Movie> entities)
+    public static MoviesResponse ToResponse(this IEnumerable<Movie> entities, int pageNumber, int pageSize, int total)
     {
-        return new MoviesResponse(entities.Select(ToResponse));
+        return new MoviesResponse
+        {
+            Items = entities.Select(ToResponse),
+            PageNumber = pageNumber,
+            PageSize = pageSize,
+            Total = total,
+        };
     }
 }

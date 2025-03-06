@@ -1,3 +1,6 @@
 ﻿namespace Movies.Contracts.Responses;
 
-public sealed record MoviesResponse(IEnumerable<MovieResponse> Items);
+public sealed class MoviesResponse : PagedResponse<MovieResponse>
+{
+
+}
