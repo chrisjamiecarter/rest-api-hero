@@ -52,30 +52,6 @@ public class MoviesController : ControllerBase
             ? await _movieService.GetByIdAsync(id, userId, cancellationToken)
             : await _movieService.GetBySlugAsync(idOrSlug, userId, cancellationToken);
 
-        if (movie is null)
-        {
-            return NotFound();
-        }
-
-        var response = movie.ToResponse();
-
-        var movieObj = new { id = movie.Id };
-        response.Links.Add(new Link(
-            linkGenerator.GetPathByAction(HttpContext, nameof(Get), values: new { idOrSlug = movie.Id }) ?? string.Empty,
-            "self",
-            "GET"
-        ));
-        response.Links.Add(new Link(
-            linkGenerator.GetPathByAction(HttpContext, nameof(Update), values: new { movie = movieObj }) ?? string.Empty,
-            "self",
-            "PUT"
-        ));
-        response.Links.Add(new Link(
-            linkGenerator.GetPathByAction(HttpContext, nameof(Delete), values: new { idOrSlug = movie.Id }) ?? string.Empty,
-            "self",
-            "DELETE"
-        ));
-
         return movie is not null
             ? Ok(movie.ToResponse())
             : NotFound();
