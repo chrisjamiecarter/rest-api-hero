@@ -6,6 +6,7 @@ using Movies.Api.Mappings;
 using Movies.Api.Routes;
 using Movies.Application.Services;
 using Movies.Contracts.Requests;
+using Movies.Contracts.Responses;
 
 namespace Movies.Api.Controllers;
 
@@ -43,13 +44,37 @@ public class MoviesController : ControllerBase
     }
 
     [HttpGet(Endpoints.Movies.Get)]
-    public async Task<IActionResult> Get([FromRoute] string idOrSlug, CancellationToken cancellationToken)
+    public async Task<IActionResult> Get([FromRoute] string idOrSlug, [FromServices] LinkGenerator linkGenerator, CancellationToken cancellationToken)
     {
         var userId = HttpContext.GetUserId();
 
         var movie = Guid.TryParse(idOrSlug, out var id)
             ? await _movieService.GetByIdAsync(id, userId, cancellationToken)
             : await _movieService.GetBySlugAsync(idOrSlug, userId, cancellationToken);
+
+        if (movie is null)
+        {
+            return NotFound();
+        }
+
+        var response = movie.ToResponse();
+
+        var movieObj = new { id = movie.Id };
+        response.Links.Add(new Link(
+            linkGenerator.GetPathByAction(HttpContext, nameof(Get), values: new { idOrSlug = movie.Id }) ?? string.Empty,
+            "self",
+            "GET"
+        ));
+        response.Links.Add(new Link(
+            linkGenerator.GetPathByAction(HttpContext, nameof(Update), values: new { movie = movieObj }) ?? string.Empty,
+            "self",
+            "PUT"
+        ));
+        response.Links.Add(new Link(
+            linkGenerator.GetPathByAction(HttpContext, nameof(Delete), values: new { idOrSlug = movie.Id }) ?? string.Empty,
+            "self",
+            "DELETE"
+        ));
 
         return movie is not null
             ? Ok(movie.ToResponse())
