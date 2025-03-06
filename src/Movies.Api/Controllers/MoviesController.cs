@@ -57,11 +57,13 @@ public class MoviesController : ControllerBase
     }
 
     [HttpGet(Endpoints.Movies.GetAll)]
-    public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAll([FromQuery] GetAllMoviesRequest request, CancellationToken cancellationToken)
     {
         var userId = HttpContext.GetUserId();
 
-        var movies = await _movieService.GetAllAsync(userId, cancellationToken);
+        var options = request.ToOptions().WithUserId(userId);
+
+        var movies = await _movieService.GetAllAsync(options, cancellationToken);
 
         return Ok(movies.ToResponse());
     }
