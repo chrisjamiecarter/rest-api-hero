@@ -54,15 +54,15 @@ internal static class Program
             })
             .AddPolicy(Auth.TrustedMemberPolicyName, policy =>
             {
-                policy.RequireAssertion(auth =>
-                    auth.User.HasClaim(claim => claim is { Type: Auth.AdminUserClaimName, Value: "true" }) ||
+                policy.RequireAssertion(auth => 
+                    auth.User.HasClaim(claim => claim is { Type: Auth.AdminUserClaimName, Value: "true" }) || 
                     auth.User.HasClaim(claim => claim is { Type: Auth.TrustedMemberClaimName, Value: "true" }));
             });
 
         builder.Services
             .AddApiVersioning(options =>
             {
-                options.DefaultApiVersion = new ApiVersion(1.0);
+                options.DefaultApiVersion= new ApiVersion(1.0);
                 options.AssumeDefaultVersionWhenUnspecified = true;
                 options.ReportApiVersions = true;
                 options.ApiVersionReader = new MediaTypeApiVersionReader("api-version");
@@ -103,8 +103,6 @@ internal static class Program
 
         app.UseAuthentication();
         app.UseAuthorization();
-
-        app.UseResponseCaching();
 
         app.UseMiddleware<ValidationMappingMiddleware>();
 
