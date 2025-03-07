@@ -45,7 +45,7 @@ public class MoviesController : ControllerBase
     }
 
     [HttpGet(Endpoints.Movies.Get)]
-    public async Task<IActionResult> Get([FromRoute] string idOrSlug, [FromServices] LinkGenerator linkGenerator, CancellationToken cancellationToken)
+    public async Task<IActionResult> Get([FromRoute] string idOrSlug, CancellationToken cancellationToken)
     {
         var userId = HttpContext.GetUserId();
 
@@ -59,7 +59,7 @@ public class MoviesController : ControllerBase
     }
 
     [HttpGet(Endpoints.Movies.GetAll)]
-    public async Task<IActionResult> GetAll([FromQuery] GetAllMoviesRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAllV1([FromQuery] GetAllMoviesRequest request, CancellationToken cancellationToken)
     {
         var userId = HttpContext.GetUserId();
 

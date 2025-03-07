@@ -1,13 +1,16 @@
 using System.Text;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Movies.Api.Constants;
 using Movies.Api.Middlewares;
+using Movies.Api.OpenApi;
 using Movies.Api.Options;
 using Movies.Application;
 using Movies.Application.Database;
 using Movies.ServiceDefaults;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Movies.Api;
 
@@ -64,9 +67,16 @@ internal static class Program
                 options.ReportApiVersions = true;
                 options.ApiVersionReader = new MediaTypeApiVersionReader("api-version");
             })
-            .AddMvc();
+            .AddMvc()
+            .AddApiExplorer();
 
         builder.Services.AddControllers();
+
+        builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
+        builder.Services.AddSwaggerGen(options =>
+        {
+            options.OperationFilter<SwaggerDefaultValues>();
+        });
 
         builder.Services.AddOpenApi();
 
@@ -79,6 +89,14 @@ internal static class Program
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
+            {
+                foreach (var description in app.DescribeApiVersions())
+                {
+                    options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName);
+                }
+            });
         }
 
         app.UseHttpsRedirection();
