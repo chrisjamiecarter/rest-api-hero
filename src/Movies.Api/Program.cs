@@ -70,6 +70,21 @@ internal static class Program
             .AddMvc()
             .AddApiExplorer();
 
+        builder.Services.AddOutputCache(options =>
+        {
+            options.AddBasePolicy(policy =>
+            {
+                policy.Cache();
+            });
+            options.AddPolicy("MovieCache", policy =>
+            {
+                policy.Cache()
+                      .Expire(TimeSpan.FromMinutes(1))
+                      .SetVaryByQuery(["title", "releaseYear", "sortBy", "pageNumber", "pageSize"])
+                      .Tag("movies");
+            });
+        });
+
         builder.Services.AddControllers();
 
         builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
@@ -103,6 +118,8 @@ internal static class Program
 
         app.UseAuthentication();
         app.UseAuthorization();
+
+        app.UseOutputCache();
 
         app.UseMiddleware<ValidationMappingMiddleware>();
 
