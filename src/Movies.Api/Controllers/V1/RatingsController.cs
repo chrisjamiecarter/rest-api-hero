@@ -6,6 +6,7 @@ using Movies.Api.Mappings;
 using Movies.Api.Routes;
 using Movies.Application.Services;
 using Movies.Contracts.Requests.V1;
+using Movies.Contracts.Responses.V1;
 
 namespace Movies.Api.Controllers.V1;
 
@@ -22,19 +23,22 @@ public class RatingsController : ControllerBase
 
     [Authorize]
     [HttpDelete(Endpoints.Movies.DeleteMovieRating)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteMovieRating([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var userId = HttpContext.GetUserId();
 
-        var result = await _ratingService.DeleteRatingAsync(userId!.Value, id, cancellationToken);
+        var deleted = await _ratingService.DeleteRatingAsync(userId!.Value, id, cancellationToken);
 
-        return result
-            ? Ok()
+        return deleted
+            ? NoContent()
             : NotFound();
     }
 
     [Authorize]
     [HttpGet(Endpoints.Ratings.GetUserRatings)]
+    [ProducesResponseType(typeof(MovieRatingsResponse), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetUserRatings(CancellationToken cancellationToken)
     {
         var userId = HttpContext.GetUserId();
@@ -46,6 +50,8 @@ public class RatingsController : ControllerBase
 
     [Authorize]
     [HttpPut(Endpoints.Movies.RateMovie)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> RateMovie([FromRoute] Guid id, [FromBody] RateMovieRequest request, CancellationToken cancellationToken)
     {
         var userId = HttpContext.GetUserId();
@@ -53,7 +59,7 @@ public class RatingsController : ControllerBase
         var result = await _ratingService.RateMovieAsync(userId!.Value, id, request.Rating, cancellationToken);
 
         return result
-            ? Ok()
+            ? NoContent()
             : NotFound();
     }
 }
