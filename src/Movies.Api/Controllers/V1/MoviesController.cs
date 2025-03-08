@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
-using Movies.Api.Constants;
+using Movies.Api.Auth;
 using Movies.Api.Extensions;
 using Movies.Api.Mappings;
 using Movies.Api.Routes;
@@ -25,7 +25,8 @@ public class MoviesController : ControllerBase
         _outputCacheStore = outputCacheStore;
     }
 
-    [Authorize(Auth.TrustedMemberPolicyName)]
+    //[Authorize(Auth.TrustedMemberPolicyName)]
+    [ServiceFilter<ApiKeyAuthFilter>]
     [HttpPost(Endpoints.Movies.Create)]
     [ProducesResponseType(typeof(MovieResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ValidationFailureResponse), StatusCodes.Status400BadRequest)]
@@ -41,7 +42,7 @@ public class MoviesController : ControllerBase
         return CreatedAtAction(nameof(Get), new { idOrSlug = movie.Id }, response);
     }
 
-    [Authorize(Auth.AdminUserPolicyName)]
+    [Authorize(AuthConstants.AdminUserPolicyName)]
     [HttpDelete(Endpoints.Movies.Delete)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -90,7 +91,7 @@ public class MoviesController : ControllerBase
         return Ok(movies.ToResponse(request.PageNumber, request.PageSize, moviesCount));
     }
 
-    [Authorize(Auth.TrustedMemberPolicyName)]
+    [Authorize(AuthConstants.TrustedMemberPolicyName)]
     [HttpPut(Endpoints.Movies.Update)]
     [ProducesResponseType(typeof(MovieResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationFailureResponse), StatusCodes.Status400BadRequest)]

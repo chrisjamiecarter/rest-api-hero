@@ -3,7 +3,7 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Movies.Api.Constants;
+using Movies.Api.Auth;
 using Movies.Api.Middlewares;
 using Movies.Api.OpenApi;
 using Movies.Api.Options;
@@ -22,8 +22,10 @@ internal static class Program
 
         builder.AddServiceDefaults();
 
-        builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
+        builder.Services.Configure<ApiOptions>(builder.Configuration.GetSection(nameof(ApiOptions)));
+        var apiOptions = builder.Configuration.GetSection(nameof(ApiOptions)).Get<ApiOptions>() ?? throw new InvalidOperationException("Unable to bind ApiOptions.");
 
+        builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
         var jwtOptions = builder.Configuration.GetSection(nameof(JwtOptions)).Get<JwtOptions>() ?? throw new InvalidOperationException("Unable to bind JwtOptions.");
 
         builder.Services
@@ -48,16 +50,22 @@ internal static class Program
 
         builder.Services
             .AddAuthorizationBuilder()
-            .AddPolicy(Auth.AdminUserPolicyName, policy =>
+            //.AddPolicy(Auth.AdminUserPolicyName, policy =>
+            //{
+            //    policy.RequireClaim(Auth.AdminUserClaimName, "true");
+            //})
+            .AddPolicy(AuthConstants.AdminUserPolicyName, policy =>
             {
-                policy.RequireClaim(Auth.AdminUserClaimName, "true");
+                policy.AddRequirements(new AdminAuthRequirement(apiOptions.Key, apiOptions.UserId));
             })
-            .AddPolicy(Auth.TrustedMemberPolicyName, policy =>
+            .AddPolicy(AuthConstants.TrustedMemberPolicyName, policy =>
             {
                 policy.RequireAssertion(auth =>
-                    auth.User.HasClaim(claim => claim is { Type: Auth.AdminUserClaimName, Value: "true" }) ||
-                    auth.User.HasClaim(claim => claim is { Type: Auth.TrustedMemberClaimName, Value: "true" }));
+                    auth.User.HasClaim(claim => claim is { Type: AuthConstants.AdminUserClaimName, Value: "true" }) ||
+                    auth.User.HasClaim(claim => claim is { Type: AuthConstants.TrustedMemberClaimName, Value: "true" }));
             });
+
+        builder.Services.AddScoped<ApiKeyAuthFilter>();
 
         builder.Services
             .AddApiVersioning(options =>
