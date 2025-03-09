@@ -1,13 +1,14 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+
 namespace Movies.Api.Auth;
 
-public class AdminAuthRequirement : IAuthorizationHandler, IAuthorizationRequirement
+public class TrustedAuthRequirement : IAuthorizationHandler, IAuthorizationRequirement
 {
     private readonly string _apiKey;
     private readonly Guid _apiUserId;
 
-    public AdminAuthRequirement(string apiKey, Guid apiUserId)
+    public TrustedAuthRequirement(string apiKey, Guid apiUserId)
     {
         _apiKey = apiKey;
         _apiUserId = apiUserId;
@@ -16,6 +17,12 @@ public class AdminAuthRequirement : IAuthorizationHandler, IAuthorizationRequire
     public Task HandleAsync(AuthorizationHandlerContext context)
     {
         if (context.User.HasClaim(AuthConstants.AdminUserClaimName, "true"))
+        {
+            context.Succeed(this);
+            return Task.CompletedTask;
+        }
+
+        if (context.User.HasClaim(AuthConstants.TrustedMemberClaimName, "true"))
         {
             context.Succeed(this);
             return Task.CompletedTask;

@@ -60,9 +60,10 @@ internal static class Program
             })
             .AddPolicy(AuthConstants.TrustedMemberPolicyName, policy =>
             {
-                policy.RequireAssertion(auth =>
-                    auth.User.HasClaim(claim => claim is { Type: AuthConstants.AdminUserClaimName, Value: "true" }) ||
-                    auth.User.HasClaim(claim => claim is { Type: AuthConstants.TrustedMemberClaimName, Value: "true" }));
+                //policy.RequireAssertion(auth =>
+                //    auth.User.HasClaim(claim => claim is { Type: AuthConstants.AdminUserClaimName, Value: "true" }) ||
+                //    auth.User.HasClaim(claim => claim is { Type: AuthConstants.TrustedMemberClaimName, Value: "true" }));
+                policy.AddRequirements(new TrustedAuthRequirement(apiOptions.Key, apiOptions.UserId));
             });
 
         builder.Services.AddScoped<ApiKeyAuthFilter>();
