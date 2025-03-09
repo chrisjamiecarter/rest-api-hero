@@ -1,6 +1,6 @@
 ﻿namespace Movies.Api.Routes;
 
-public static class Endpoints
+public static class ApiRoutes
 {
     private const string ApiBase = "api";
 

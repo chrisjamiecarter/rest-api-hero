@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Movies.Api.Auth;
+using Movies.Api.Endpoints;
 using Movies.Api.Middlewares;
 using Movies.Api.OpenApi;
 using Movies.Api.Options;
@@ -76,8 +77,11 @@ internal static class Program
                 options.ReportApiVersions = true;
                 options.ApiVersionReader = new MediaTypeApiVersionReader("api-version");
             })
-            .AddMvc()
+            // NOTE: Migrated to Minimal API.
+            // .AddMvc()
             .AddApiExplorer();
+
+        builder.Services.AddEndpointsApiExplorer();
 
         builder.Services.AddOutputCache(options =>
         {
@@ -94,7 +98,8 @@ internal static class Program
             });
         });
 
-        builder.Services.AddControllers();
+        // NOTE: Migrated to Minimal API.
+        // builder.Services.AddControllers();
 
         builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
         builder.Services.AddSwaggerGen(options =>
@@ -107,6 +112,8 @@ internal static class Program
         builder.AddApplication();
 
         var app = builder.Build();
+
+        app.CreateApiVersionSet();
 
         app.MapDefaultEndpoints();
 
@@ -132,7 +139,9 @@ internal static class Program
 
         app.UseMiddleware<ValidationMappingMiddleware>();
 
-        app.MapControllers();
+        // NOTE: Migrated to Minimal API.
+        // app.MapControllers();
+        app.MapApiEndpoints();
 
         var dbInitializer = app.Services.GetRequiredService<DbInitializer>();
         await dbInitializer.InitializeAsync();

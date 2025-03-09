@@ -18,8 +18,8 @@ public static class GetAllMoviesMapping
                 : request.SortBy.StartsWith('-')
                     ? SortOrder.Descending
                     : SortOrder.Ascending,
-            PageNumber = request.PageNumber,
-            PageSize = request.PageSize,
+            PageNumber = request.PageNumber.GetValueOrDefault(PagedRequest.DefaultPageNumber),
+            PageSize = request.PageSize.GetValueOrDefault(PagedRequest.DefaultPageSize),
         };
     }
 
